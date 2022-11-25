@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Nerko+One&display=swap");
+/* Headline */
+.Headline {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 28%;
+  height: 28%;
+}
+.Pacman-img {
+  float: left;
+  width: 200px;
+  height: 200px;
+  margin-top: 350px;
+  margin-left: 100px;
+}
+.Ghost-img {
+  margin-top: 350px;
+  margin-right: 100px;
+  float: right;
+  width: 250px;
+  height: 250px;
+}
+
+.score {
+  position: absolute;
+  top: 10px;
+  color: yellow;
+  margin-top: 260px;
+  margin-left: 100px;
+  font-size: 40px;
+  font-family: "Nerko One", cursive;
+}
+
+.highscore {
+  color: yellow;
+  font-size: 40px;
+  right: 100px;
+  top: 299px;
+  font-family: "Nerko One", cursive;
+  position: absolute;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(0, 0, 0);
+}
+
+#game {
+  position: relative;
+  width: 800px;
+  height: 800px;
+  margin: auto;
+}
+
+.entity {
+  background-size: cover;
+  position: absolute;
+
+  scale: 1.2;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 800px;
+  height: 800px;
+  border: solid black;
+  background-image: url("https://png2.cleanpng.com/sh/1d81f8afd1fae5461ef0f73eae6a51a4/L0KzQYm3VMA0N6V7fZH0aYP2gLBuTgBia15yedC2cHz4g370k71xaZQyhdN3LXH1c7Lrhb1oaZ5qRd54Z3AwgLLqjfFvNWZme6UBZkfnQoTpUfY0Nmk3SqICMka3QYa5Usc2P2Y1SaM9NkKxgLBu/kisspng-pac-man-plus-ms-pac-man-arcade-game-logo-pacman-5ac36f7d23b1f3.8220726415227575011462.png");
+  background-size: contain;
+  background-position-y: center;
+  background-repeat: no-repeat;
+}
+
+.grid div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.pac-dot {
+  /* background-image: url("./assets/images/pellet/pellet.png");
+  background-size: cover;
+  scale: 2; */
+  content: url("./assets/images/pellet/pellet.png");
+  max-width: 10px;
+  max-height: 10px;
+}
+
+.wall {
+  background-image: url("./assets/images/wall1.jpg");
+  background-size: contain;
+}
+
+.power-pellet {
+  content: url("./assets/images/pellet/power-pellet.png");
+  max-width: 20px;
+  max-height: 20px;
+}
+
+#blinky {
+  position: absolute;
+
+  background-size: cover;
+}
+
+.pinky {
+  background-color: pink;
+}
+
+.inky {
+  background-color: cyan;
+}
+
+.clyde {
+  background-color: orange;
+}
+
+.scared-ghost {
+  background-color: aquamarine;
+}
