@@ -1,8 +1,9 @@
 const PACMAN_EL = document.querySelector("#pacman");
-const gameField = document.querySelector("#game").getClientRects()[0];
+const PACMAN_IMG = document.getElementById("imgPac");
+const GAME_FIELD_RECT = document.querySelector("#game").getBoundingClientRect();
 
 const WIN_SCORE = 465;
-const img = document.getElementById("imgPac");
+
 let velocityX = 1;
 let velocityY = 0;
 let positionX = 100;
@@ -10,12 +11,19 @@ let positionY = 100;
 let enterRight;
 let enterLeft;
 let imageCount = 0;
+
 let score = 0;
 let highscore = localStorage.getItem("highscore");
+
 const SCOREFIELD = document.createElement("span");
 SCOREFIELD.innerText = `Score: ${score}`;
 SCOREFIELD.classList.add("score");
 document.body.appendChild(SCOREFIELD);
+
+const highscoreField = document.createElement("span");
+highscoreField.innerText = `Highscore: ${highscore}`;
+highscoreField.classList.add("highscore");
+document.body.appendChild(highscoreField);
 
 const BLINKY_PICS = [
   "../assets/images/ghosts/ghost-blinky-right.png",
@@ -35,13 +43,22 @@ const INKY_PICS = [
   "../assets/images/ghosts/ghost-inky-left.png",
   "../assets/images/ghosts/ghost-inky-up.png",
 ];
-
-const highscoreField = document.createElement("span");
-highscoreField.innerText = `Highscore: ${localStorage.getItem("highscore")}`;
-highscoreField.classList.add("highscore");
-document.body.appendChild(highscoreField);
+const PACMAN_PICS = [
+  "./assets/images/pacman/pacman-0.png",
+  "./assets/images/pacman/pacman-1.png",
+  "./assets/images/pacman/pacman-2.png",
+];
 
 class Ghost {
+  // new Ghost({ 
+  //   element: "...",
+  //   directionX: 40,
+  //   directionY: 0,
+  //   x: 0,
+  //   y: 0,
+  // })
+  //
+  // constructor({ element, x, y, directionX, directionY }) {
   constructor(element, x, y, directionX, directionY) {
     this.element = element;
     this.x = x;
@@ -71,17 +88,14 @@ class Ghost {
       }
     }
   }
-  changeImage(images) {
-    let i;
-    for (i in images) {
-      this.element.style.backgroundImage = `url("${images[i]}")`;
-      console.log(images.length);
-    }
-    if (i === images.length) {
-      i = 0;
-      console.log("yoo");
+
+  /** @param {string[]} images */
+  changeImages(images) {
+    for (let image of images) {
+      this.element.style.backgroundImage = `url("${image}")`;
     }
   }
+
   randomMove() {
     let randomNumber = Math.floor(Math.random() * 4);
     switch (randomNumber) {
@@ -112,59 +126,15 @@ class Ghost {
   }
 }
 
-let clyde = new Ghost(document.getElementById("clyde"), 400, 200, 40, 0);
-let inky = new Ghost(document.getElementById("inky"), 400, 200, 50, 0);
-let blinky = new Ghost(document.querySelector("#blinky"), 400, 200, 60, 0);
-blinky.moveGhost();
-blinky.randomMove();
-blinky.changeImage(BLINKY_PICS);
-clyde.moveGhost();
-clyde.randomMove();
-clyde.changeImage(CLYDE_PICS);
-inky.moveGhost();
-inky.randomMove();
-inky.changeImage(INKY_PICS);
-let pacmanImages = [
-  "./assets/images/pacman/pacman-0.png",
-  "./assets/images/pacman/pacman-1.png",
-  "./assets/images/pacman/pacman-2.png",
-];
-
-document.addEventListener("keydown", function (e) {
-  switch (e.key) {
-    case "ArrowDown":
-      velocityY = 4;
-      velocityX = 0;
-      PACMAN_EL.style.transform = "rotate(90deg)";
-      break;
-    case "ArrowUp":
-      velocityY = -4;
-      velocityX = 0;
-      PACMAN_EL.style.transform = "rotate(-90deg)";
-      break;
-    case "ArrowLeft":
-      velocityX = -4;
-      velocityY = 0;
-      PACMAN_EL.style.transform = "rotate(180deg)";
-      break;
-    case "ArrowRight":
-      velocityX = 4;
-      velocityY = 0;
-      PACMAN_EL.style.transform = "rotate(0deg)";
-      break;
-  }
-});
-
 function checkWallCollision(wall) {
+  const pacmanRect = PACMAN_EL.getBoundingClientRect();
+  const wallRect = wall.getBoundingClientRect();
+
   if (
-    PACMAN_EL.getClientRects()[0].x <
-      wall.getClientRects()[0].x + wall.getClientRects()[0].width &&
-    PACMAN_EL.getClientRects()[0].x + PACMAN_EL.getClientRects()[0].width >
-      wall.getClientRects()[0].x &&
-    PACMAN_EL.getClientRects()[0].y <
-      wall.getClientRects()[0].y + wall.getClientRects()[0].height &&
-    PACMAN_EL.getClientRects()[0].y + PACMAN_EL.getClientRects()[0].height >
-      wall.getClientRects()[0].y
+    pacmanRect.x < wallRect.x + wallRect.width &&
+    pacmanRect.x + pacmanRect.width > wallRect.x &&
+    pacmanRect.y < wallRect.y + wallRect.height &&
+    pacmanRect.y + pacmanRect.height > wallRect.y
   ) {
     if (velocityX > 0) {
       positionX -= 4;
@@ -261,36 +231,71 @@ function movePacMan() {
   positionY += velocityY;
   PACMAN_EL.style.top = positionY + "px";
 }
-function animate() {
-  PACMAN_EL.style.backgroundImage = `url("${pacmanImages[imageCount]}")`;
 
-  imageCount++;
-  if (pacmanImages.length === imageCount) {
-    imageCount = 0;
-  }
-  return imageCount;
+function animate() {
+  PACMAN_EL.style.backgroundImage = `url("${PACMAN_PICS[imageCount]}")`;
+  imageCount = ++imageCount % PACMAN_PICS.length;
 }
 
 function update() {
   movePacMan();
-  for (i in squares) {
-    if (squares[i].classList.contains("wall")) {
-      checkWallCollision(squares[i]);
+  for (square of squares) {
+    if (square.classList.contains("wall")) {
+      checkWallCollision(square);
     } else if (
-      squares[i].classList.contains("left-exit") ||
-      squares[i].classList.contains("right-exit")
+      square.classList.contains("left-exit") ||
+      square.classList.contains("right-exit")
     ) {
-      checkExitColl(squares[i]);
-    } else if (squares[i].classList.contains("right-enter")) {
-      enterRight = squares[i];
-    } else if (squares[i].classList.contains("left-enter")) {
-      enterLeft = squares[i];
-    } else if (squares[i].classList.contains("power-pellet")) {
-      checkPowerDots(squares[i]);
+      checkExitColl(square);
+    } else if (square.classList.contains("right-enter")) {
+      enterRight = square;
+    } else if (square.classList.contains("left-enter")) {
+      enterLeft = square;
+    } else if (square.classList.contains("power-pellet")) {
+      checkPowerDots(square);
     }
   }
   checkDots();
 }
+
+let clyde = new Ghost(document.getElementById("clyde"), 400, 200, 40, 0);
+let inky = new Ghost(document.getElementById("inky"), 400, 200, 50, 0);
+let blinky = new Ghost(document.querySelector("#blinky"), 400, 200, 60, 0);
+blinky.moveGhost();
+blinky.randomMove();
+blinky.changeImages(BLINKY_PICS);
+clyde.moveGhost();
+clyde.randomMove();
+clyde.changeImages(CLYDE_PICS);
+inky.moveGhost();
+inky.randomMove();
+inky.changeImages(INKY_PICS);
+
+document.addEventListener("keydown", function (e) {
+  switch (e.key) {
+    case "ArrowDown":
+      velocityY = 4;
+      velocityX = 0;
+      PACMAN_EL.style.transform = "rotate(90deg)";
+      break;
+    case "ArrowUp":
+      velocityY = -4;
+      velocityX = 0;
+      PACMAN_EL.style.transform = "rotate(-90deg)";
+      break;
+    case "ArrowLeft":
+      velocityX = -4;
+      velocityY = 0;
+      PACMAN_EL.style.transform = "rotate(180deg)";
+      break;
+    case "ArrowRight":
+      velocityX = 4;
+      velocityY = 0;
+      PACMAN_EL.style.transform = "rotate(0deg)";
+      break;
+  }
+});
+
 
 setInterval(checkWin, 100);
 setInterval(animate, 100);

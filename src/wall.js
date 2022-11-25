@@ -69,35 +69,43 @@ const squares = [];
 function createBoard() {
   for (let i = 0; i < layout.length; i++) {
     const square = document.createElement("div");
-    const img = document.createElement("img");
 
     grid.appendChild(square);
     squares.push(square);
 
+    const PACDOT_ID = 0;
+    const WALL_ID = 1;
+
+    let className;
+
     //add layout to the board
-    if (layout[i] === 0) {
+    if (layout[i] === PACDOT_ID) {
+      const img = document.createElement("img");
       img.classList.add("pac-dot");
       img.id = "imgPac";
       square.appendChild(img);
-    } else if (layout[i] === 1) {
-      squares[i].classList.add("wall");
+    } else if (layout[i] === WALL_ID) {
+      className = "wall";
     } else if (layout[i] === 2) {
-      squares[i].classList.add("ghost-lair");
+      className = "ghost-lair";
     } else if (layout[i] === 3) {
-      squares[i].classList.add("power-pellet");
+      className = "power-pellet";
     } else if (layout[i] === 4) {
-      squares[i];
+      // 4 represents empty space
     } else if (layout[i] === 6) {
-      squares[i].classList.add("left-exit");
+      className = "left-exit";
     } else if (layout[i] === 7) {
-      squares[i].classList.add("right-exit");
+      className = "right-exit";
     } else if (layout[i] === 8) {
-      squares[i].classList.add("right-enter");
+      className = "right-enter";
     } else if (layout[i] === 9) {
-      squares[i].classList.add("left-enter");
+      className = "left-enter";
     }
+
+    square.classList.add(className);
   }
 }
+
 createBoard();
 /*  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
